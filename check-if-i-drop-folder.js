@@ -6,7 +6,7 @@
  * @param {File} file File from Event.dataTrasfer.files
  * @param {Function} callback(result) Result is true if File is a directory
  */
-function checkIfIDropFolder(file, callback) {
+function isRegularFile(file, callback) {
     // Chrome/Mac and IE10/Win8 ignores directory in dataTrasfer.files
 
     if (
@@ -22,18 +22,19 @@ function checkIfIDropFolder(file, callback) {
         try {
             var reader = new FileReader();
             reader.onerror = function() {
+                reader.onloadend = reader.onerror = null;
                 // Chrome (Linux/Win), Firefox (Linux/Mac), Opera 12.01 (Linux/Mac/Win)
-                callback(true);
-            };
-            reader.onloadstart = reader.onprogress = function() {
-                // abort immediately, this is regular file
-                this.abort();
                 callback(false);
+            };
+            reader.onloadend = function() {
+                reader.onloadend = reader.onerror = null;
+                // this is regular file
+                callback(true);
             };
             reader.readAsDataURL(file);
         } catch(e) {
             // Firefox 13.0.1/Win throws exception if I drop folder
-            callback(true);
+            callback(false);
         }
     }
 }
