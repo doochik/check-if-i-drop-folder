@@ -22,12 +22,14 @@ function isRegularFile(file, callback) {
         try {
             var reader = new FileReader();
             reader.onerror = function() {
-                reader.onloadend = reader.onerror = null;
+                reader.onloadend = reader.onprogress = reader.onerror = null;
                 // Chrome (Linux/Win), Firefox (Linux/Mac), Opera 12.01 (Linux/Mac/Win)
                 callback(false);
             };
-            reader.onloadend = function() {
-                reader.onloadend = reader.onerror = null;
+            reader.onloadend = reader.onprogress = function() {
+                reader.onloadend = reader.onprogress = reader.onerror = null;
+                // abort reading immediately after first success event
+                reader.abort();
                 // this is regular file
                 callback(true);
             };
