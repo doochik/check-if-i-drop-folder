@@ -12,8 +12,8 @@ function isRegularFile(file, callback) {
     if (
         // for example, Safari supports dnd but not FileReader
         !window['FileReader'] ||
-        // FileReader doesn't work in Opera 12.00, it always returns error
-        (window['opera'] && window['opera'].version() === '12.00')
+        // FileReader doesn't work in Opera 12.00/Mac, it always returns error
+        (window['opera'] && navigator.platform.toLowerCase().indexOf('mac') > -1 && window['opera'].version() === '12.00')
     ) {
         // sorry, can't check
         callback(null);
