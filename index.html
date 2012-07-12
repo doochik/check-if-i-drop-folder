@@ -1,0 +1,68 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Page to test files and folder</title>
+    <script type="text/javascript" src="check-if-i-drop-folder.js"></script>
+</head>
+<body>
+<div style="border: 1px solid #000;width: 300px;height: 300px;">Drop file or folder here</div>
+<script type="text/javascript">
+    var div = document.getElementsByTagName('div')[0];
+    div.addEventListener('dragenter', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+    }, false);
+    div.addEventListener('dragover', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+    }, false);
+    div.addEventListener('drop', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        test(e);
+    }, false);
+
+    function test(e) {
+        if (!window['FileReader']) {
+            console.log('No FileReader');
+            return;
+        }
+
+        var files = e.dataTransfer.files;
+        console.log('e.dataTransfer.files', files.length);
+        for (var i = 0, j = files.length; i < j; i++) {
+            var file = files[i];
+            checkIfIDropFolder(file, function(file) {
+                console.log('=== snippet result ====');
+                console.log(file);
+                console.log('=== snippet result ====');
+            });
+            console.log(file.name, 'size', file.size, 'File', file);
+            read(file, 'readAsDataURL');
+            read(file, 'readAsArrayBuffer');
+            read(file, 'readAsBinaryString');
+            read(file, 'readAsText');
+        }
+    }
+
+    function read(file, method) {
+        try {
+            var reader = new FileReader();
+            console.log(reader);
+            reader.onabort = function(){console.log(file.name, method, 'onabort', arguments)};
+            reader.onerror = function(){console.log(file.name, method, 'onerror', arguments)};
+            reader.onload = function(){console.log(file.name, method, 'onload', arguments)};
+            reader.onloadend = function(){console.log(file.name, method, 'onloadend', arguments)};
+            reader.onloadstart = function(){console.log(file.name, method, 'onloadstart', arguments)};
+            reader.onprogress = function(){console.log(file.name, method, 'onprogress', arguments)};
+            reader[method](file);
+            console.log(file.name, method, 'after call', reader);
+
+        }catch(e) {
+            console.log('Exception', e);
+        }
+    }
+</script>
+</body>
+</html>
