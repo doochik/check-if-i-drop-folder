@@ -1,5 +1,5 @@
 /**
- * Check whetever file is directory.
+ * Check whetever file is directory. This function tries to read file with FileReader.
  * I've checked this on Linux/Mac/Windows in Chrome 20, Firefox 13.0.1, Opera 12.01.
  * @author Alexey Androsov <doochik@ya.ru>
  * @licence MIT
