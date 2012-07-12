@@ -33,11 +33,13 @@
         console.log('e.dataTransfer.files', files.length);
         for (var i = 0, j = files.length; i < j; i++) {
             var file = files[i];
-            checkIfIDropFolder(file, function(file) {
-                console.log('=== snippet result ====');
-                console.log(file);
-                console.log('=== snippet result ====');
-            });
+            (function(testFile) {
+                isRegularFile(testFile, function(result) {
+                    console.log('=== snippet result ====');
+                    console.log(testFile.name, 'is regular file?', result);
+                    console.log('=== snippet result ====');
+                });
+            })(file);
             console.log(file.name, 'size', file.size, 'File', file);
             read(file, 'readAsDataURL');
             read(file, 'readAsArrayBuffer');
@@ -49,7 +51,6 @@
     function read(file, method) {
         try {
             var reader = new FileReader();
-            console.log(reader);
             reader.onabort = function(){console.log(file.name, method, 'onabort', arguments)};
             reader.onerror = function(){console.log(file.name, method, 'onerror', arguments)};
             reader.onload = function(){console.log(file.name, method, 'onload', arguments)};
@@ -57,8 +58,6 @@
             reader.onloadstart = function(){console.log(file.name, method, 'onloadstart', arguments)};
             reader.onprogress = function(){console.log(file.name, method, 'onprogress', arguments)};
             reader[method](file);
-            console.log(file.name, method, 'after call', reader);
-
         }catch(e) {
             console.log('Exception', e);
         }
