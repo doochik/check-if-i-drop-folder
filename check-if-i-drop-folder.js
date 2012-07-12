@@ -4,7 +4,7 @@
  * @author Alexey Androsov <doochik@ya.ru>
  * @licence MIT
  * @param {File} file File from Event.dataTrasfer.files
- * @param {Function} callback(result) Result is true if File is a directory
+ * @param {Function} callback(result) Result is true if File is a regular file.
  */
 function isRegularFile(file, callback) {
     // Chrome/Mac and IE10/Win8 ignores directory in dataTrasfer.files
