@@ -1,6 +1,6 @@
 /**
- * Check whetever file is directory. This function tries to read file with FileReader.
- * I've checked this on Linux/Mac/Windows in Chrome 20, Firefox 13.0.1, Opera 12.01.
+ * Check whetever drop target is directory or file. This function tries to read file with FileReader.
+ * I've checked this on Linux/Mac/Windows in latest version of Chrome, Firefox, IE and Opera.
  * @author Alexey Androsov <doochik@ya.ru>
  * @licence MIT
  * @param {File} file File from Event.dataTrasfer.files
@@ -8,9 +8,15 @@
  */
 function isRegularFile(file, callback) {
     // Chrome/Mac and IE10/Win8 ignores directory in dataTrasfer.files
+    
+    // if size is bigger than 4kb it is regular file
+    if (file.size > 4096) {
+        callback(true);
+        return;
+    }
 
     if (
-        // for example, Safari supports dnd but not FileReader
+        // for example, Safari 5 supports dnd but not FileReader
         !window['FileReader'] ||
         // FileReader doesn't work in Opera 12.00/Mac, it always returns error
         (window['opera'] && navigator.platform.toLowerCase().indexOf('mac') > -1 && window['opera'].version() === '12.00')
@@ -28,8 +34,13 @@ function isRegularFile(file, callback) {
             };
             reader.onloadend = reader.onprogress = function() {
                 reader.onloadend = reader.onprogress = reader.onerror = null;
-                // abort reading immediately after first success event
-                reader.abort();
+                // We can't abort reading after loadend event.
+                // @see https://developer.mozilla.org/en/DOM/FileReader#abort()
+                // @see https://bugzilla.mozilla.org/show_bug.cgi?id=657964
+                if (e.type != 'loadend') {
+                    // abort reading immediately after first success event
+                    reader.abort();
+                }
                 // this is regular file
                 callback(true);
             };
