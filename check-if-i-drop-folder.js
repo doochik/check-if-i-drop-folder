@@ -32,7 +32,7 @@ function isRegularFile(file, callback) {
                 // Chrome (Linux/Win), Firefox (Linux/Mac), Opera 12.01 (Linux/Mac/Win)
                 callback(false);
             };
-            reader.onloadend = reader.onprogress = function() {
+            reader.onloadend = reader.onprogress = function(e) {
                 reader.onloadend = reader.onprogress = reader.onerror = null;
                 // We can't abort reading after loadend event.
                 // @see https://developer.mozilla.org/en/DOM/FileReader#abort()
